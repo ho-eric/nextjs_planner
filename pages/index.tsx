@@ -1,20 +1,20 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {
 
   const [todo, setTodo] = useState({
-    task: "",
-    startTime: "",
-    endTime: ""
+    task: '',
+    startTime: '',
+    endTime: ''
   });
 
   const [todoList, setTodoList] = useState([]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setTodo({
       ...todo,
@@ -22,17 +22,16 @@ const Home: NextPage = () => {
     });
   };
 
-  const handleAddTask = (e) => {
+  const handleAddTask = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setTodoList([
       todo,
       ...todoList
     ])
     console.log('task created:', todo);
-
     document.getElementById('task').value = '';
-    document.getElementById('startTime').value = '';
-    document.getElementById('endTime').value = '';
+    // document.getElementById('startTime').value = '';
+    // document.getElementById('endTime').value = '';
 
 
   };
@@ -54,7 +53,7 @@ const Home: NextPage = () => {
       <main className={styles.title}>
         NextJS Planner
       </main>
-      <form onSubmit={handleAddTask}>
+      <form>
         <input
           id="task"
           placeholder="Enter your task here"
@@ -62,7 +61,7 @@ const Home: NextPage = () => {
           name="task"
           onChange={handleChange}
         />
-        &nbsp;
+        {/* &nbsp;
         from
         &nbsp;
         <input
@@ -80,17 +79,17 @@ const Home: NextPage = () => {
           name="endTime"
           onChange={handleChange}
         />
-        &nbsp;
-        <button type="submit">
+        &nbsp; */}
+        <button onClick={handleAddTask}>
           Add Task
         </button>
       </form>
       <ul>
         {
           todoList.map((todo, index) => (
-            <h1>{todo.task} from {todo.startTime} to {todo.endTime}
+            <h1>{todo.task}
               &nbsp;
-              <button onClick={() => handleEdit(todo)}>Edit</button>
+              <button onClick={() => handleEdit(todo)}>Assign Time</button>
               &nbsp;
               <button onClick={() => handleDelete(todo)}>Delete</button>
             </h1>
