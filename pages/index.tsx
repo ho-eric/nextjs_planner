@@ -7,75 +7,49 @@ import PieChart from '../components/PieChart'
 
 const Home: NextPage = () => {
 
-  const [todo, setTodo] = useState({
-    task: '',
-    startTime: '',
-    endTime: ''
-  });
-
+  const [todo, setTodo] = useState("");
   const [todoList, setTodoList] = useState([]);
-  const [showTime, setShowTime] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setTodo({
-      ...todo,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [todoEdit, setTodoEdit] = useState(null)
+  const [todoStartTime, setTodoStartTime] = useState("");
+  const [todoEndTime, setTodoEndTime] = useState("");
+  const [timeBlockList, setTimeBlockList] = useState([]);
 
   const handleAddTask = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setTodoList([
-      todo,
-      ...todoList
-    ])
-    console.log('task created:', todo);
+
+    if (document.getElementById('task').value === '') {
+      return;
+    }
+
+    const newTodo = {
+      id: new Date().getTime(),
+      task: todo,
+      startTime: "",
+      endTime: ""
+    }
+    setTodoList([...todoList].concat(newTodo));
+    setTodo("");
     document.getElementById('task').value = '';
-    // document.getElementById('startTime').value = '';
-    // document.getElementById('endTime').value = '';
-
-
   };
-
-  const handleAssignTime = todo => {
-
-  }
 
   const handleDelete = todo => {
     setTodoList(todoList.filter(t => t !== todo));
     console.log('deleted:', todo);
   };
 
-  const showTimeBox = () => setShowTime(true);
+  const handleAddTime = id => {
+    const updatedTodoList = [...todoList].map((todo) => {
 
-  const TimeBox = () => {
-    return (
-      <div>
-        <form>
-          &nbsp;
-          from
-          &nbsp;
-          <input
-            id="startTime"
-            type="time"
-            name="startTime"
-            onChange={handleChange}
-          />
-          &nbsp;
-          to
-          &nbsp;
-          <input
-            id="endTime"
-            type="time"
-            name="endTime"
-            onChange={handleChange}
-          />
-          &nbsp;
-        </form>
-        <button>Assign</button>
-      </div>
-    )
+      if (todo.id === id) {
+        todo.startTime = todoStartTime;
+        todo.endTime = todoEndTime;
+      }
+      console.log("Assigned time", todo);
+      console.log("Current todo list:", todoList);
+      return todo;
+    });
+    setTodoList(updatedTodoList);
+    setTodoEdit(null);
   }
 
   return (
@@ -86,31 +60,62 @@ const Home: NextPage = () => {
       <main className={styles.title}>
         NextJS Planner
       </main>
-      <form>
-        <input
-          id="task"
-          placeholder="Enter your task here"
-          type="text"
-          name="task"
-          onChange={handleChange}
-        />
-        <button onClick={handleAddTask}>
-          Add Task
-        </button>
-      </form>
-      <ul>
-        {
-          todoList.map((todo, index) => (
-            <h1 key={index}>{todo.task}
-              &nbsp;
-              <button onClick={showTimeBox}>Assign/Edit Time</button>
-              {showTime ? <TimeBox /> : null}
-              &nbsp;
-              <button onClick={() => handleDelete(todo)}>Delete</button>
-            </h1>
-          ))
-        }
-      </ul>
+      <div className={styles.container}>
+        <form>
+          <input
+            id="task"
+            placeholder="Enter your task here"
+            type="text"
+            name="task"
+            autoComplete="off"
+            onChange={(e) => setTodo(e.target.value)}
+          />
+          &nbsp;
+          <button onClick={handleAddTask}>
+            Add Task
+          </button>
+        </form>
+        <ol type="1">
+          {
+            todoList.map((todo) => (
+              <li key={todo.id}>
+                {todo.id === todoEdit ? (
+                  <div>
+                    {todo.task}
+                    &nbsp;
+                    <input
+                      id="startTime"
+                      type="time"
+                      name="startTime"
+                      onChange={(e) => setTodoStartTime(e.target.value)}
+                    />
+                    &nbsp;
+                    to
+                    &nbsp;
+                    <input
+                      id="endTime"
+                      type="time"
+                      name="endTime"
+                      onChange={(e) => setTodoEndTime(e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  <div>{todo.task} {todo.startTime} {todo.endTime}</div>
+                )}
+                {
+                  todo.id === todoEdit ? (
+                    <button onClick={() => handleAddTime(todo.id)}>Assign</button>
+                  ) : (
+                    <button onClick={() => setTodoEdit(todo.id)}>Assign/Edit Time</button>
+                  )
+                }
+                &nbsp;
+                <button onClick={() => handleDelete(todo)}>Delete</button>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
     </div>
   )
 }
