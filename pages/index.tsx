@@ -8,6 +8,7 @@ import PieChart from '../components/PieChart'
 const Home: NextPage = () => {
 
   const [todo, setTodo] = useState({
+    id: new Date().getTime(),
     task: '',
     startTime: '',
     endTime: ''
@@ -16,12 +17,13 @@ const Home: NextPage = () => {
   const [todoList, setTodoList] = useState([]);
   const [showTime, setShowTime] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     e.preventDefault();
     setTodo({
       ...todo,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
+    console.log("current todos:", todoList);
   };
 
   const handleAddTask = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,19 +34,29 @@ const Home: NextPage = () => {
     ])
     console.log('task created:', todo);
     document.getElementById('task').value = '';
-    // document.getElementById('startTime').value = '';
-    // document.getElementById('endTime').value = '';
-
-
   };
 
-  const handleAssignTime = todo => {
+  const handleAssignStartTime = (e) => {
+    e.preventDefault();
+    console.log(todo.task, e.target.name, e.target.value);
+      setTodo({
+        ...todo,
+        [e.target.name]: e.target.value
+      });
+  }
 
+  const handleAssignEndTime = (e) => {
+    e.preventDefault();
+    setTodo({
+      ...todo,
+      [e.target.name]: e.target.value
+    });
   }
 
   const handleDelete = todo => {
     setTodoList(todoList.filter(t => t !== todo));
     console.log('deleted:', todo);
+    console.log('current tasks:', todoList);
   };
 
   const showTimeBox = () => setShowTime(true);
@@ -60,7 +72,7 @@ const Home: NextPage = () => {
             id="startTime"
             type="time"
             name="startTime"
-            onChange={handleChange}
+            onChange={handleAssignStartTime}
           />
           &nbsp;
           to
@@ -69,15 +81,14 @@ const Home: NextPage = () => {
             id="endTime"
             type="time"
             name="endTime"
-            onChange={handleChange}
+            onChange={handleAssignEndTime}
           />
           &nbsp;
+          <button onClick={handleChange}>Assign</button>
         </form>
-        <button>Assign</button>
       </div>
     )
   }
-
   return (
     <div>
       <Head>
@@ -92,6 +103,7 @@ const Home: NextPage = () => {
           placeholder="Enter your task here"
           type="text"
           name="task"
+          autoComplete="off"
           onChange={handleChange}
         />
         <button onClick={handleAddTask}>
