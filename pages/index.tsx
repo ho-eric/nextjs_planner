@@ -12,6 +12,7 @@ const Home: NextPage = () => {
   const [todoEdit, setTodoEdit] = useState(null)
   const [todoStartTime, setTodoStartTime] = useState("");
   const [todoEndTime, setTodoEndTime] = useState("");
+  const [timeBlock, setTimeBlock] = useState("");
   const [timeBlockList, setTimeBlockList] = useState([]);
 
   const handleAddTask = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,16 +26,29 @@ const Home: NextPage = () => {
       id: new Date().getTime(),
       task: todo,
       startTime: "",
-      endTime: ""
+      endTime: "",
     }
+
+    const newTimeBlock = {
+      id: newTodo.id,
+      task: todo,
+      value: 0,
+      color: "#" + Math.floor(Math.random() * 16777215).toString(16)
+    }
+
     setTodoList([...todoList].concat(newTodo));
     setTodo("");
+    setTimeBlockList([...timeBlockList].concat(newTimeBlock));
+    setTimeBlock("");
     document.getElementById('task').value = '';
   };
 
   const handleDelete = todo => {
     setTodoList(todoList.filter(t => t !== todo));
+    setTimeBlockList(timeBlockList.filter(t => t !== todo));
     console.log('deleted:', todo);
+    console.log('cur todo list:', todoList);
+    console.log('cur timeblock list:', timeBlockList);
   };
 
   const handleAddTime = id => {
@@ -44,13 +58,35 @@ const Home: NextPage = () => {
         todo.startTime = todoStartTime;
         todo.endTime = todoEndTime;
       }
-      console.log("Assigned time", todo);
-      console.log("Current todo list:", todoList);
+
+      handleAddTimeBox(todo);
       return todo;
     });
+
     setTodoList(updatedTodoList);
     setTodoEdit(null);
   }
+
+  const handleAddTimeBox = todo => {
+    const updatedTimeBlockList = [...timeBlockList].map((timeBlock) => {
+      console.log('todo', todo.id);
+      console.log('timeblock', timeBlock.id);
+
+      let splitStartTime = todo.startTime.split(':');
+      let splitEndTime = todo.endTime.split(':');
+      let timeInMins = (new Date().setHours(splitEndTime[0], splitEndTime[1])
+        - new Date().setHours(splitStartTime[0], splitStartTime[1])) / 60000;
+
+      if (todo.id === timeBlock.id) {
+        timeBlock.value = timeInMins;
+      }
+
+      return timeBlock;
+    });
+
+    setTimeBlockList(updatedTimeBlockList);
+  }
+
 
   return (
     <div>
@@ -87,6 +123,7 @@ const Home: NextPage = () => {
                       id="startTime"
                       type="time"
                       name="startTime"
+                      required
                       onChange={(e) => setTodoStartTime(e.target.value)}
                     />
                     &nbsp;
@@ -96,6 +133,7 @@ const Home: NextPage = () => {
                       id="endTime"
                       type="time"
                       name="endTime"
+                      required
                       onChange={(e) => setTodoEndTime(e.target.value)}
                     />
                   </div>
@@ -115,6 +153,8 @@ const Home: NextPage = () => {
             ))
           }
         </ol>
+        Task Time Breakdown:
+        <PieChart data={timeBlockList} />
       </div>
     </div>
   )

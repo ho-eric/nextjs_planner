@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
-
+import * as d3 from 'd3';
 
 function PieChart(props) {
 
-  console.log("calling piechart");
-  console.log("props", props.data);
+  //console.log("calling piechart");
+  //console.log("props", props.data);
 
   // gets connected to svg drawn by React by variable name and its ref attribute
   let d3Container = React.createRef();
@@ -37,7 +37,7 @@ function PieChart(props) {
     let chartSvg = d3.select(d3Container.current);
 
     chartSvg.append('g')
-      .attr('id', "pieChart-" + props.name)
+      .attr('id', "pieChart-" + props.task)
       .attr('class', 'chart-content')
       .attr('transform', `translate(
       ${dimensions.width / 2 + dimensions.padding},
@@ -47,23 +47,23 @@ function PieChart(props) {
   // update function
   useEffect(function() {
 
-    console.log("update effect");
+    //console.log("update effect");
 
     if (!(d3Container.current && data))
       return;
 
     const valueSum = d3.sum(data, d => d.value);
-    if (100 - valueSum > 0) {
+    if (valueSum - valueSum >= 0) {
       data.push({
-        name: '$empty',
-        value: (100 - valueSum),
+        task: '$empty',
+        value: (valueSum - valueSum),
         color: '#7f8187'
       });
     }
 
     const arcs = pie(data);
 
-    const g = d3.select("#pieChart-" + props.name);
+    const g = d3.select("#pieChart-" + props.task);
     g.selectAll('path')
       .data(arcs)
       .join('path')
@@ -71,14 +71,14 @@ function PieChart(props) {
       .on('mouseout', (event, d) => onSliceOut(event, d))
       .transition().duration(500)
       .attr('fill', d => d.data.color)
-      .attr('transform', d => d.data.name == '$empty' ? 'scale(0.95)' : '')
+      .attr('transform', d => d.data.task == '$empty' ? 'scale(0.95)' : '')
       .attr('d', arc);
   }, [props.data, d3Container.current]
   ); // useEffect update function
 
 
   function onSliceOver(event, d) {
-    if (d.data.name == '$empty')
+    if (d.data.task == '$empty')
       return;
 
     let pointer = d3.pointer(event);
@@ -87,7 +87,7 @@ function PieChart(props) {
       .transition().duration(200)
       .attr('transform', 'scale(1.1)')
 
-    const g = d3.select("#pieChart-" + props.name);
+    const g = d3.select("#pieChart-" + props.task);
     g.select('#chart-tooltip').remove();
     g.append('text')
       .attr('x', pointer[0])
@@ -95,11 +95,11 @@ function PieChart(props) {
       .attr('fill', 'fill', getColorValue(d.data.color) > 150 ? '#000000' : '#ffffff')
       .attr('text-anchor', 'middle')
       .attr('id', 'chart-tooltip')
-      .text(`${d.data.name} ${d.data.value.toFixed(2)}%`);
+      .text(`${d.data.task} ${d.data.value} mins`);
   }
 
   function onSliceOut(event, d) {
-    if (d.data.name == '$empty')
+    if (d.data.task == '$empty')
       return;
 
     d3.select(event.currentTarget)
