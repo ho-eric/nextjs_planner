@@ -45,7 +45,7 @@ const Home: NextPage = () => {
 
   const handleDelete = todo => {
     setTodoList(todoList.filter(t => t !== todo));
-    setTimeBlockList(timeBlockList.filter(t => t !== todo));
+    setTimeBlockList(timeBlockList.filter(t => t.id !== todo.id));
     console.log('deleted:', todo);
     console.log('cur todo list:', todoList);
     console.log('cur timeblock list:', timeBlockList);
@@ -69,8 +69,6 @@ const Home: NextPage = () => {
 
   const handleAddTimeBox = todo => {
     const updatedTimeBlockList = [...timeBlockList].map((timeBlock) => {
-      console.log('todo', todo.id);
-      console.log('timeblock', timeBlock.id);
 
       let splitStartTime = todo.startTime.split(':');
       let splitEndTime = todo.endTime.split(':');

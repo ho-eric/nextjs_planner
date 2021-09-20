@@ -29,7 +29,7 @@ function PieChart(props) {
 
 
   // init code - only run on startup
-  useEffect(function() {
+  useEffect(function () {
 
     if (!(d3Container.current && data))
       return;
@@ -45,7 +45,7 @@ function PieChart(props) {
   }, []);
 
   // update function
-  useEffect(function() {
+  useEffect(function () {
 
     //console.log("update effect");
 
@@ -90,9 +90,9 @@ function PieChart(props) {
     const g = d3.select("#pieChart-" + props.task);
     g.select('#chart-tooltip').remove();
     g.append('text')
-      .attr('x', pointer[0])
-      .attr('y', pointer[1] - 20)
-      .attr('fill', 'fill', getColorValue(d.data.color) > 150 ? '#000000' : '#ffffff')
+      .attr('x', 0)
+      .attr('y', 130)
+      .attr('fill', 'black')
       .attr('text-anchor', 'middle')
       .attr('id', 'chart-tooltip')
       .text(`${d.data.task} ${d.data.value} mins`);
