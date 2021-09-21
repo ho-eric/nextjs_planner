@@ -6,18 +6,29 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest"
   },
   "dependencies": {
+    "@cypress/xvfb": "^1.2.4",
     "d3": "^7.0.1",
     "next": "11.1.2",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "xvfb": "^0.4.0"
   },
   "devDependencies": {
+    "@testing-library/dom": "^8.5.0",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.1.0",
+    "@testing-library/user-event": "^13.2.1",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.9.4",
     "@types/react": "17.0.20",
+    "babel-jest": "^27.2.1",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
+    "jest": "^27.2.1",
     "typescript": "4.4.3"
   }
 }
