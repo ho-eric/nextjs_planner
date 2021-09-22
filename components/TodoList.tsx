@@ -92,7 +92,7 @@ function TodoList() {
         <title>NextJS Planner</title>
       </Head>
       <main className={styles.title}>
-        NextJS Planner
+        What're your plans for the day?
       </main>
       <div className={styles.container}>
         <form>
@@ -105,11 +105,11 @@ function TodoList() {
             onChange={(e) => setTodo(e.target.value)}
           />
           &nbsp;
-          <button onClick={handleAddTask}>
+          <button className="addTaskButton" onClick={handleAddTask}>
             Add Task
           </button>
         </form>
-        <ol type="1">
+        <ol >
           {
             todoList.map((todo: any) => (
               <li key={todo.id}>
@@ -140,9 +140,9 @@ function TodoList() {
                 )}
                 {
                   todo.id === todoEdit ? (
-                    <button onClick={() => handleAddTime(todo.id)}>Assign</button>
+                    <button className="assignButton" onClick={() => handleAddTime(todo.id)}>Assign</button>
                   ) : (
-                    <button onClick={() => setTodoEdit(todo.id)}>Assign/Edit Time</button>
+                    <button className="assignEditButton" onClick={() => setTodoEdit(todo.id)}>Assign/Edit Time</button>
                   )
                 }
                 &nbsp;
@@ -151,7 +151,9 @@ function TodoList() {
             ))
           }
         </ol>
-        <h2>Task Time Breakdown:</h2>
+        <h2>Task Time Breakdown: </h2>
+        <h5>(Hover over the pie chart for more details!)</h5>
+
         <PieChart data={timeBlockList} />
       </div>
     </div>
