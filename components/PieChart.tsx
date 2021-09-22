@@ -1,13 +1,13 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import * as d3 from 'd3';
 
-function PieChart(props) {
+function PieChart(props: any) {
 
   //console.log("calling piechart");
   //console.log("props", props.data);
 
   // gets connected to svg drawn by React by variable name and its ref attribute
-  let d3Container = React.createRef();
+  let d3Container = React.createRef<any>();
 
   let dimensions = ({
     width: props.width ? props.width : 200,
@@ -17,15 +17,13 @@ function PieChart(props) {
 
   const data = [...props.data];
 
-  let pie = d3.pie()
+  let pie = (d3.pie<any>())
     .sort(null)
-    .value(d => d.value);
+    .value((d: any) => d.value);
 
   let arc = d3.arc()
     .innerRadius(0)
     .outerRadius(Math.min(dimensions.width, dimensions.height) / 2 - 1);
-
-
 
 
   // init code - only run on startup
@@ -34,7 +32,7 @@ function PieChart(props) {
     if (!(d3Container.current && data))
       return;
 
-    let chartSvg = d3.select(d3Container.current);
+    let chartSvg = d3.select(d3Container.current as any);
 
     chartSvg.append('g')
       .attr('id', "pieChart-" + props.task)
@@ -42,7 +40,7 @@ function PieChart(props) {
       .attr('transform', `translate(
       ${dimensions.width / 2 + dimensions.padding},
       ${dimensions.height / 2 + dimensions.padding})`);
-  }, []);
+  });
 
   // update function
   useEffect(function () {
@@ -52,7 +50,7 @@ function PieChart(props) {
     if (!(d3Container.current && data))
       return;
 
-    const valueSum = d3.sum(data, d => d.value);
+    const valueSum = d3.sum(data, (d: any) => d.value);
     if (valueSum - valueSum >= 0) {
       data.push({
         task: '$empty',
@@ -71,17 +69,15 @@ function PieChart(props) {
       .on('mouseout', (event, d) => onSliceOut(event, d))
       .transition().duration(500)
       .attr('fill', d => d.data.color)
-      .attr('transform', d => d.data.task == '$empty' ? 'scale(0.95)' : '')
-      .attr('d', arc);
-  }, [props.data, d3Container.current]
+      .attr('transform', d => (d.data.task) == '$empty' ? 'scale(0.95)' : '')
+      .attr('d', arc as any);
+  },
   ); // useEffect update function
 
 
-  function onSliceOver(event, d) {
+  function onSliceOver(event: any, d: any) {
     if (d.data.task == '$empty')
       return;
-
-    let pointer = d3.pointer(event);
 
     d3.select(event.currentTarget)
       .transition().duration(200)
@@ -95,10 +91,10 @@ function PieChart(props) {
       .attr('fill', 'black')
       .attr('text-anchor', 'middle')
       .attr('id', 'chart-tooltip')
-      .text(`${d.data.task} ${d.data.value} mins`);
+      .text(`${d.data.task}: ${d.data.value} mins`);
   }
 
-  function onSliceOut(event, d) {
+  function onSliceOut(event: any, d: any) {
     if (d.data.task == '$empty')
       return;
 
@@ -108,16 +104,6 @@ function PieChart(props) {
 
     const g = d3.select("#pieChart");
     g.select('#chart-tooltip').remove();
-  }
-
-  function getColorValue(color) {
-    let sumVal = 0;
-    for (let i = 1; i < color.length; i += 2) {
-      let val = parseInt(`0x${color[i]}${color[i + 1]}`);
-      sumVal += val;
-    }
-    sumVal /= 3;
-    return sumVal;
   }
 
   return (
