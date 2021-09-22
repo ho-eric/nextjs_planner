@@ -88,7 +88,7 @@ function PieChart(props: any) {
     g.append('text')
       .attr('x', 0)
       .attr('y', 130)
-      .attr('fill', 'black')
+      .attr('fill', 'white')
       .attr('text-anchor', 'middle')
       .attr('id', 'chart-tooltip')
       .text(`${d.data.task}: ${d.data.value} mins`);
@@ -102,7 +102,7 @@ function PieChart(props: any) {
       .transition().duration(200)
       .attr('transform', 'scale(1)')
 
-    const g = d3.select("#pieChart");
+    const g = d3.select(".pie-chart");
     g.select('#chart-tooltip').remove();
   }
 
